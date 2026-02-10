@@ -1,6 +1,9 @@
 package it.unimib.gestionequestionari.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Question {
@@ -9,13 +12,18 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "El texto de la pregunta es obligatorio")
+    @Size(max = 500, message = "Máximo 500 caracteres")
     @Column(nullable = false, length = 500)
     private String text;
 
+    @NotNull(message = "El tipo de pregunta es obligatorio")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private QuestionType type;
 
+    @NotBlank(message = "La categoría es obligatoria")
+    @Size(max = 100, message = "Máximo 100 caracteres")
     @Column(nullable = false, length = 100)
     private String category;
 
