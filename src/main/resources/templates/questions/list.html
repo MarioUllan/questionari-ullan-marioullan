@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Preguntas</title>
+</head>
+<body>
+<h1>Preguntas</h1>
+
+<p><a href="/">Volver al inicio</a> | <a href="/questions/new">Nueva pregunta</a></p>
+
+<table border="1" cellpadding="6">
+    <tr>
+        <th>ID</th>
+        <th>Texto</th>
+        <th>Tipo</th>
+        <th>Categoría</th>
+    </tr>
+    <tr th:each="q : ${questions}">
+        <td th:text="${q.id}"></td>
+        <td th:text="${q.text}"></td>
+        <td th:text="${q.type}"></td>
+        <td th:text="${q.category}"></td>
+    </tr>
+</table>
+
+</body>
+</html>

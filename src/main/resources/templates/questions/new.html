@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nueva pregunta</title>
+</head>
+<body>
+<h1>Nueva pregunta</h1>
+
+<form method="post" action="/questions" th:object="${question}">
+    <p>
+        <label>Texto:</label><br>
+        <input type="text" th:field="*{text}" size="80" required>
+    </p>
+
+    <p>
+        <label>Categoría:</label><br>
+        <input type="text" th:field="*{category}" required>
+    </p>
+
+    <p>
+        <label>Tipo:</label><br>
+        <select th:field="*{type}">
+            <option th:each="t : ${types}" th:value="${t}" th:text="${t}"></option>
+        </select>
+    </p>
+
+    <button type="submit">Guardar</button>
+    <a href="/questions">Cancelar</a>
+</form>
+
+</body>
+</html>
