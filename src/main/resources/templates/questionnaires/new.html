@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Nuevo cuestionario</title>
@@ -9,8 +9,9 @@
 <h1>Nuevo cuestionario</h1>
 
 <form th:action="@{/questionnaires}" th:object="${questionnaire}" method="post">
-    <label>Título:</label>
-    <input type="text" th:field="*{title}" />
+    <label for="title">Título:</label>
+    <input type="text" id="title" th:field="*{title}" />
+
     <div th:if="${#fields.hasErrors('title')}"
          th:errors="*{title}"
          style="color:red"></div>
