@@ -19,6 +19,10 @@ public class QuestionService {
         return repo.findAll();
     }
 
+    public List<Question> findAllById(List<Long> ids) {
+        return repo.findAllById(ids);
+    }
+
     public Question save(Question q) {
         return repo.save(q);
     }

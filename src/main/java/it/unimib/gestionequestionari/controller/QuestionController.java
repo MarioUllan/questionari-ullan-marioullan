@@ -3,8 +3,10 @@ package it.unimib.gestionequestionari.controller;
 import it.unimib.gestionequestionari.model.Question;
 import it.unimib.gestionequestionari.model.QuestionType;
 import it.unimib.gestionequestionari.service.QuestionService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -30,7 +32,15 @@ public class QuestionController {
     }
 
     @PostMapping("/questions")
-    public String create(@ModelAttribute Question question) {
+    public String create(@Valid @ModelAttribute("question") Question question,
+                         BindingResult bindingResult,
+                         Model model) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("types", QuestionType.values());
+            return "questions/new";
+        }
+
         service.save(question);
         return "redirect:/questions";
     }

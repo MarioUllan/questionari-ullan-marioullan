@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuevo cuestionario</title>
+</head>
+<body>
+
+<h1>Nuevo cuestionario</h1>
+
+<form th:action="@{/questionnaires}" th:object="${questionnaire}" method="post">
+    <label>Título:</label>
+    <input type="text" th:field="*{title}" />
+    <div th:if="${#fields.hasErrors('title')}"
+         th:errors="*{title}"
+         style="color:red"></div>
+
+    <button type="submit">Crear</button>
+</form>
+
+<p><a href="/questionnaires">Volver</a></p>
+
+</body>
+</html>
