@@ -26,4 +26,8 @@ public class QuestionService {
     public Question save(Question q) {
         return repo.save(q);
     }
+    public void deleteById(Long id) {
+        repo.deleteById(id);
+    }
+
 }

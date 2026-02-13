@@ -44,4 +44,10 @@ public class QuestionController {
         service.save(question);
         return "redirect:/questions";
     }
+    @PostMapping("/questions/{id}/delete")
+    public String delete(@PathVariable Long id) {
+        service.deleteById(id);
+        return "redirect:/questions";
+    }
+
 }
