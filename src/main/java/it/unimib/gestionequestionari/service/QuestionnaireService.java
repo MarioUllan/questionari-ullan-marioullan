@@ -26,4 +26,8 @@ public class QuestionnaireService {
     public Questionnaire save(Questionnaire q) {
         return repo.save(q);
     }
+    public void deleteById(Long id) {
+        repo.deleteById(id);
+    }
+
 }

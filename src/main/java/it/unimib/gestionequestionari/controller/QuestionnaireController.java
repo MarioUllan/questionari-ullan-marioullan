@@ -70,4 +70,10 @@ public class QuestionnaireController {
 
         return "redirect:/questionnaires";
     }
+    @PostMapping("/questionnaires/{id}/delete")
+    public String delete(@PathVariable Long id) {
+        questionnaireService.deleteById(id);
+        return "redirect:/questionnaires";
+    }
+
 }
