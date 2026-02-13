@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cuestionarios</title>
+</head>
+<body>
+
+<h1>Cuestionarios</h1>
+
+<p>
+    <a href="/">Inicio</a> |
+    <a href="/questionnaires/new">Nuevo cuestionario</a> |
+    <a href="/questions">Ver preguntas</a>
+</p>
+
+<table border="1" cellpadding="6">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Título</th>
+        <th>Nº preguntas</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="q : ${questionnaires}">
+        <td th:text="${q.id}"></td>
+        <td th:text="${q.title}"></td>
+        <td th:text="${q.questions != null ? #lists.size(q.questions) : 0}"></td>
+        <td>
+            <a th:href="@{/questionnaires/{id}/edit-questions(id=${q.id})}">Asignar preguntas</a>
+
+            <form th:action="@{/questionnaires/{id}/delete(id=${q.id})}"
+                  method="post"
+                  style="display:inline">
+                <button type="submit">Eliminar</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
