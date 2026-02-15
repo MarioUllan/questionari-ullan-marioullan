@@ -32,11 +32,22 @@ public class SubmissionController {
         return "redirect:/submissions/" + submission.getAccessCode();
     }
 
+    @GetMapping("/submissions/access")
+    public String accessByCode(@RequestParam("code") String code) {
+        return "redirect:/submissions/" + code.trim();
+    }
+
     @GetMapping("/submissions/{code}")
     public String view(@PathVariable String code, Model model) {
-        QuestionnaireSubmission submission = submissionService.findByCode(code);
-        model.addAttribute("submission", submission);
-        return "submissions/fill";
+        try {
+            QuestionnaireSubmission submission = submissionService.findByCode(code);
+            model.addAttribute("submission", submission);
+            model.addAttribute("questionnaire", submission.getQuestionnaire());
+            return "submissions/fill";
+        } catch (IllegalArgumentException ex) {
+            model.addAttribute("code", code);
+            return "submissions/not-found";
+        }
     }
 
     @PostMapping("/submissions/{code}/save")

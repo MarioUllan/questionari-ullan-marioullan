@@ -7,6 +7,17 @@
 <body>
 <h1>Gestione Questionari</h1>
 <p>La aplicación está funcionando ✅</p>
+<h2>Acceder a un cuestionario compilado (por código)</h2>
+
+<form th:action="@{/submissions/access}" method="get">
+  <label for="code">Código:</label>
+  <input id="code" name="code" type="text" placeholder="Pega aquí tu código" required>
+  <button type="submit">Abrir</button>
+</form>
+
+<div th:if="${param.notfound}">
+  <p style="color:red;">No existe ningún cuestionario con ese código.</p>
+</div>
 
 <ul>
   <li><a href="/questions">Gestión de preguntas</a></li>
