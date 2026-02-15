@@ -29,7 +29,6 @@ public class SubmissionService {
         QuestionnaireSubmission submission = new QuestionnaireSubmission(code, email, questionnaire);
         submission.setStatus(SubmissionStatus.DRAFT);
 
-        // crear answers vacías (1 por pregunta)
         for (Question q : questionnaire.getQuestions()) {
             Answer a = new Answer(submission, q);
             submission.getAnswers().add(a);
