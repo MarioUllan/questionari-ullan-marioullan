@@ -30,7 +30,17 @@
         <td th:text="${q.title}"></td>
         <td th:text="${q.questions != null ? #lists.size(q.questions) : 0}"></td>
         <td>
-            <a th:href="@{/questionnaires/{id}/edit-questions(id=${q.id})}">Asignar preguntas</a>
+            <a th:href="@{/questionnaires/{id}/edit-questions(id=${q.id})}">
+                Asignar preguntas
+            </a>
+
+            <br>
+
+            <a th:href="@{/fill/{id}(id=${q.id})}">
+                Compilar cuestionario
+            </a>
+
+            <br>
 
             <form th:action="@{/questionnaires/{id}/delete(id=${q.id})}"
                   method="post"
