@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Asignar preguntas</title>
+</head>
+<body>
+
+<h1 th:text="'Asignar preguntas a: ' + ${questionnaire.title}"></h1>
+
+<form th:action="@{/questionnaires/{id}/questions(id=${questionnaire.id})}" method="post">
+
+    <div th:each="q : ${allQuestions}">
+        <label>
+            <input type="checkbox"
+                   name="questionIds"
+                   th:value="${q.id}"
+                   th:checked="${questionnaire.questions.contains(q)}"/>
+            <span th:text="${q.text}"></span>
+            (<span th:text="${q.type}"></span>)
+        </label>
+        <br/>
+    </div>
+
+    <button type="submit">Guardar</button>
+</form>
+
+<p><a href="/questionnaires">Volver</a></p>
+
+</body>
+</html>

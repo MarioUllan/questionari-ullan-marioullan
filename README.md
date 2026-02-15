@@ -160,3 +160,17 @@ Tag de entrega:
 ```
 finalDelivery
 ```
+
+## UML Diagrams
+
+The following UML diagrams are included:
+
+- Use Case Diagram
+- Domain Class Diagram
+- Design Class Diagram
+- System Sequence Diagram – Start & Submit
+- System Sequence Diagram – Search Submission
+- Design Sequence Diagram – Submit Final
+- State Diagram – QuestionnaireSubmission
+- Activity Diagram – Fill and Submit Questionnaire
+- Software Architecture Diagram
