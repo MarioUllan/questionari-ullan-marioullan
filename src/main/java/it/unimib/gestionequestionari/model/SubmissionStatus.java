@@ -1,6 +1,6 @@
 package it.unimib.gestionequestionari.model;
 
 public enum SubmissionStatus {
-    DRAFT,
-    FINAL
+    IN_PROGRESS,
+    SUBMITTED
 }

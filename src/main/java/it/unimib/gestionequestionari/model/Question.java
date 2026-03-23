@@ -27,6 +27,9 @@ public class Question {
     @Column(nullable = false, length = 100)
     private String category;
 
+    @Column(nullable = false)
+    private boolean required = true;
+
     public Question() {}
 
     public Question(String text, QuestionType type, String category) {
@@ -45,4 +48,7 @@ public class Question {
 
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
+
+    public boolean isRequired() { return required; }
+    public void setRequired(boolean required) { this.required = required; }
 }

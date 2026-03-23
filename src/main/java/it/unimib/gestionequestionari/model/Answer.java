@@ -13,7 +13,7 @@ public class Answer {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "submission_id")
-    private QuestionnaireSubmission submission;
+    private Submission submission;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "question_id")
@@ -27,15 +27,15 @@ public class Answer {
 
     public Answer() {}
 
-    public Answer(QuestionnaireSubmission submission, Question question) {
+    public Answer(Submission submission, Question question) {
         this.submission = submission;
         this.question = question;
     }
 
     public Long getId() { return id; }
 
-    public QuestionnaireSubmission getSubmission() { return submission; }
-    public void setSubmission(QuestionnaireSubmission submission) { this.submission = submission; }
+    public Submission getSubmission() { return submission; }
+    public void setSubmission(Submission submission) { this.submission = submission; }
 
     public Question getQuestion() { return question; }
     public void setQuestion(Question question) { this.question = question; }
