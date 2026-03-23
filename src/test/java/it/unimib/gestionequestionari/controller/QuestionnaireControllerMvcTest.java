@@ -2,6 +2,7 @@ package it.unimib.gestionequestionari.controller;
 
 import it.unimib.gestionequestionari.service.QuestionService;
 import it.unimib.gestionequestionari.service.QuestionnaireService;
+import it.unimib.gestionequestionari.service.SubmissionService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,6 +26,9 @@ class QuestionnaireControllerMvcTest {
 
     @MockBean
     private QuestionService questionService;
+
+    @MockBean
+    private SubmissionService submissionService;
 
     @Test
     void list_shouldReturnViewAndModel() throws Exception {

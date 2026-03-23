@@ -2,108 +2,84 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Compilar cuestionario</title>
+    <title>Responder cuestionario</title>
 </head>
 <body>
 
 <nav style="margin-bottom:16px;">
     <a href="/">Inicio</a> |
     <a href="/questionnaires">Lista cuestionarios</a> |
-    <a th:href="@{/submissions/{code}(code=${submission.accessCode})}">
-        Recargar este cuestionario
-    </a>
+    <a th:href="@{/submissions/{id}(id=${submission.id})}">Recargar</a>
 </nav>
 <hr>
 
-<h1 th:text="${submission.questionnaire.title}"></h1>
+<h1 th:text="${questionnaire.title}"></h1>
 
 <div style="padding:10px; border:1px solid #ccc; margin-bottom:12px;">
     <p style="margin:0;">
-        <b>Código:</b>
-        <span id="codeValue" th:text="${submission.accessCode}"></span>
-        <button type="button" onclick="navigator.clipboard.writeText(document.getElementById('codeValue').innerText)">
-            Copiar código
+        <b>Código del cuestionario:</b>
+        <span id="codeValue" th:text="${questionnaire.accessCode}"></span>
+        <button type="button"
+                onclick="navigator.clipboard.writeText(document.getElementById('codeValue').innerText)">
+            Copiar
         </button>
     </p>
-    <p style="margin:6px 0 0 0;">
+    <p style="margin:0; margin-top:6px;">
+        <b>Email:</b> <span th:text="${submission.respondentEmail}"></span>
+        &nbsp;|&nbsp;
         <b>Estado:</b> <span th:text="${submission.status}"></span>
     </p>
-
-    <div th:if="${submission.status.name() == 'DRAFT'}" style="margin-top:8px;">
-        <small>
-            Guarda este código: con él podrás volver más tarde para <b>ver, editar o borrar</b> tu cuestionario compilado.
-        </small>
-    </div>
-
-    <div th:if="${submission.status.name() == 'FINAL'}" style="margin-top:8px; color:green;">
-        <b>Cuestionario enviado como definitivo.</b>
-        <small>Guarda el código por si quieres volver a consultarlo.</small>
-    </div>
 </div>
 
-<div th:if="${param.final}">
-    <p style="color:green"><b>Enviado como definitivo.</b></p>
+<div th:if="${param.submitted}" style="color:green; margin-bottom:12px;">
+    ✅ Enviado correctamente.
 </div>
 
-<form th:if="${submission.status.name() == 'DRAFT'}"
-      th:action="@{/submissions/{code}/save(code=${submission.accessCode})}"
-      method="post">
+<div th:if="${error}" style="color:red; margin-bottom:12px;">
+    <b>Error:</b> <span th:text="${error}"></span>
+</div>
 
-    <div th:each="a : ${submission.answers}">
-        <p>
-            <b th:text="${a.question.text}"></b><br>
+<form th:action="@{/submissions/{id}/save(id=${submission.id})}" method="post"
+      th:if="${submission.status.name() == 'IN_PROGRESS'}">
+
+    <div th:each="a : ${submission.answers}" style="margin-bottom:12px;">
+        <div>
+            <b th:text="${a.question.text}"></b>
+            <span th:if="${a.question.required}" style="color:red;">*</span>
+        </div>
 
         <div th:if="${a.question.type.name() == 'OPEN'}">
-            <label th:for="${'answer_' + a.question.id}">Respuesta:</label>
-            <input type="text"
-                   th:id="${'answer_' + a.question.id}"
-                   th:name="${'answer_' + a.question.id}"
-                   th:value="${a.textAnswer}">
+            <textarea th:name="${'answer_' + a.question.id}" rows="3" cols="80"
+                      th:text="${a.textAnswer}"></textarea>
         </div>
 
         <div th:if="${a.question.type.name() == 'MULTIPLE_CHOICE'}">
-            <label th:for="${'answer_' + a.question.id}">Respuesta:</label>
-            <input type="text"
-                   th:id="${'answer_' + a.question.id}"
-                   th:name="${'answer_' + a.question.id}"
+            <input type="text" th:name="${'answer_' + a.question.id}"
                    th:value="${a.choiceAnswer}">
+            <small>(por ahora, introduce una opción en texto)</small>
         </div>
-        </p>
-        <hr>
     </div>
 
     <button type="submit">Guardar borrador</button>
 </form>
 
-<form th:if="${submission.status.name() == 'DRAFT'}"
-      th:action="@{/submissions/{code}/submit(code=${submission.accessCode})}"
-      method="post">
-
+<form th:action="@{/submissions/{id}/submit(id=${submission.id})}" method="post"
+      th:if="${submission.status.name() == 'IN_PROGRESS'}" style="margin-top:10px;">
+    <!-- resend same answers to submit -->
     <div th:each="a : ${submission.answers}">
-        <input type="hidden"
-               th:name="${'answer_' + a.question.id}"
+        <input type="hidden" th:name="${'answer_' + a.question.id}"
                th:value="${a.question.type.name() == 'OPEN' ? a.textAnswer : a.choiceAnswer}">
     </div>
-
-    <button type="submit">Enviar definitivo</button>
+    <button type="submit">Enviar</button>
 </form>
 
-<div th:if="${submission.status.name() == 'FINAL'}">
-    <h3>Respuestas (solo lectura)</h3>
-
-    <div th:each="a : ${submission.answers}">
-        <p>
-            <b th:text="${a.question.text}"></b><br>
-            <span th:if="${a.question.type.name() == 'OPEN'}" th:text="${a.textAnswer}"></span>
-            <span th:if="${a.question.type.name() == 'MULTIPLE_CHOICE'}" th:text="${a.choiceAnswer}"></span>
-        </p>
-        <hr>
+<div th:if="${submission.status.name() == 'SUBMITTED'}">
+    <h3>Respuestas enviadas (solo lectura)</h3>
+    <div th:each="a : ${submission.answers}" style="margin-bottom:12px;">
+        <div><b th:text="${a.question.text}"></b></div>
+        <div th:text="${a.question.type.name() == 'OPEN' ? a.textAnswer : a.choiceAnswer}"></div>
     </div>
 </div>
-
-<form th:action="@{/submissions/{code}/delete(code=${submission.accessCode})}" method="post">
-    <button type="submit">Borrar cuestionario compilado</button>
-</form>
 
 </body>
 </html>

@@ -2,22 +2,15 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Código no encontrado</title>
+    <title>No encontrado</title>
 </head>
 <body>
-
-<h1>Código no encontrado</h1>
-
-<p>
-    El cuestionario compilado con el código
-    <b th:text="${code}"></b>
-    no existe (puede haber sido eliminado).
-</p>
-
-<p>
-    <a href="/">Volver al inicio</a> |
-    <a href="/questionnaires">Ver cuestionarios</a>
-</p>
-
+<nav style="margin-bottom:16px;">
+    <a href="/">Inicio</a> |
+    <a href="/fill">Empezar</a>
+</nav>
+<hr>
+<h1>Submission no encontrada</h1>
+<p>No existe ninguna submission con id: <b th:text="${id}"></b></p>
 </body>
 </html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Submissions</title>
+</head>
+<body>
+
+<p>
+    <a href="/questionnaires">← Volver a cuestionarios</a> |
+    <a href="/fill">Responder con código</a>
+</p>
+
+<h1 th:text="${'Submissions: ' + questionnaire.title}"></h1>
+
+<p>
+    <b>Estado:</b> <span th:text="${questionnaire.status}"></span>
+    <br>
+    <b>Código:</b> <span th:text="${questionnaire.accessCode}"></span>
+</p>
+
+<table border="1" cellpadding="6">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Email</th>
+        <th>Estado</th>
+        <th>Creado</th>
+        <th>Enviado</th>
+        <th>Acción</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="s : ${submissions}">
+        <td th:text="${s.id}"></td>
+        <td th:text="${s.respondentEmail}"></td>
+        <td th:text="${s.status}"></td>
+        <td th:text="${s.createdAt}"></td>
+        <td th:text="${s.submittedAt != null ? s.submittedAt : '—'}"></td>
+        <td><a th:href="@{/submissions/{id}(id=${s.id})}">Ver</a></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

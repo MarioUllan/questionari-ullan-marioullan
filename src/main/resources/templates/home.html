@@ -1,27 +1,24 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Gestione Questionari</title>
+  <title>Mi cuestionario</title>
 </head>
 <body>
 <h1>Gestione Questionari</h1>
-<p>La aplicación está funcionando ✅</p>
-<h2>Acceder a un cuestionario compilado (por código)</h2>
+<p>La aplicación si está funcionando ✅</p>
 
-<form th:action="@{/submissions/access}" method="get">
-  <label for="code">Código:</label>
-  <input id="code" name="code" type="text" placeholder="Pega aquí tu código" required>
-  <button type="submit">Abrir</button>
-</form>
+<nav style="margin-bottom:16px;">
+  <a href="/questionnaires">Administrar cuestionarios</a> |
+  <a href="/questions">Banco de preguntas</a> |
+  <a href="/fill">Responder un cuestionario</a>
+</nav>
 
-<div th:if="${param.notfound}">
-  <p style="color:red;">No existe ningún cuestionario con ese código.</p>
-</div>
+<hr>
 
-<ul>
-  <li><a href="/questions">Gestión de preguntas</a></li>
-  <li><a href="/questionnaires">Gestión de cuestionarios</a></li>
-</ul>
+<h2>Responder un cuestionario</h2>
+<p>Introduce el <b>código del cuestionario</b> y tu <b>email</b>:</p>
+<a href="/fill">Ir al formulario</a>
+
 </body>
 </html>

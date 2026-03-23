@@ -8,6 +8,8 @@
 
 <h1 th:text="'Asignar preguntas a: ' + ${questionnaire.title}"></h1>
 
+<p th:if="${error}" style="color:red;" th:text="${error}"></p>
+
 <form th:action="@{/questionnaires/{id}/questions(id=${questionnaire.id})}" method="post">
 
     <div th:each="q : ${allQuestions}">

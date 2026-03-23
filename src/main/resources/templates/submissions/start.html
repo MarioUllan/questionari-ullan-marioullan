@@ -5,14 +5,30 @@
     <title>Empezar cuestionario</title>
 </head>
 <body>
+<nav style="margin-bottom:16px;">
+    <a href="/">Inicio</a> |
+    <a href="/questionnaires">Lista cuestionarios</a>
+</nav>
+<hr>
+
 <h1>Empezar cuestionario</h1>
 
-<form th:action="@{/fill/{id}(id=${questionnaireId})}" method="post">
-    <label for="email">Email (para notificación):</label>
-    <input id="email" name="email" type="email" required>
-    <button type="submit">Empezar</button>
+<div th:if="${error}" style="color:red; margin-bottom:12px;">
+    <b>Error:</b> <span th:text="${error}"></span>
+</div>
+
+<form th:action="@{/fill}" method="post">
+    <p>
+        <label for="accessCode">Código de acceso:</label><br>
+        <input id="accessCode" name="accessCode" type="text" required th:value="${accessCode}">
+    </p>
+    <p>
+        <label for="email">Email:</label><br>
+        <input id="email" name="email" type="email" required th:value="${email}">
+    </p>
+
+    <button type="submit">Continuar</button>
 </form>
 
-<p><a href="/questionnaires">Volver</a></p>
 </body>
 </html>

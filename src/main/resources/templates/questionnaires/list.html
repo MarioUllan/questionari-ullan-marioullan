@@ -8,10 +8,13 @@
 
 <h1>Cuestionarios</h1>
 
+<p th:if="${error}" style="color:red;" th:text="${error}"></p>
+
 <p>
     <a href="/">Inicio</a> |
     <a href="/questionnaires/new">Nuevo cuestionario</a> |
-    <a href="/questions">Ver preguntas</a>
+    <a href="/questions">Banco de preguntas</a> |
+    <a href="/fill">Responder cuestionario</a>
 </p>
 
 <table border="1" cellpadding="6">
@@ -19,6 +22,8 @@
     <tr>
         <th>ID</th>
         <th>Título</th>
+        <th>Estado</th>
+        <th>Código</th>
         <th>Nº preguntas</th>
         <th>Acciones</th>
     </tr>
@@ -28,24 +33,30 @@
     <tr th:each="q : ${questionnaires}">
         <td th:text="${q.id}"></td>
         <td th:text="${q.title}"></td>
-        <td th:text="${q.questions != null ? #lists.size(q.questions) : 0}"></td>
+        <td th:text="${q.status}"></td>
         <td>
-            <a th:href="@{/questionnaires/{id}/edit-questions(id=${q.id})}">
-                Asignar preguntas
-            </a>
+            <span th:if="${q.accessCode}" th:text="${q.accessCode}"></span>
+            <span th:if="${q.accessCode == null}">—</span>
+        </td>
+        <td th:text="${q.questions != null ? #lists.size(q.questions) : 0}"></td>
 
-            <br>
+        <td>
+            <a th:href="@{/questionnaires/{id}/edit-questions(id=${q.id})}">Editar preguntas</a>
+            |
+            <a th:href="@{/questionnaires/{id}/submissions(id=${q.id})}">Ver submissions</a>
 
-            <a th:href="@{/fill/{id}(id=${q.id})}">
-                Compilar cuestionario
-            </a>
+            <span th:if="${q.status.name() == 'DRAFT'}">
+                |
+                <form th:action="@{/questionnaires/{id}/finalize(id=${q.id})}" method="post" style="display:inline;">
+                    <button type="submit">Finalizar</button>
+                </form>
+            </span>
 
-            <br>
-
-            <form th:action="@{/questionnaires/{id}/delete(id=${q.id})}"
-                  method="post"
-                  style="display:inline">
-                <button type="submit">Eliminar</button>
+            |
+            <form th:action="@{/questionnaires/{id}/delete(id=${q.id})}" method="post" style="display:inline;">
+                <button type="submit" onclick="return confirm('¿Seguro que quieres borrar este cuestionario?')">
+                    Borrar
+                </button>
             </form>
         </td>
     </tr>
