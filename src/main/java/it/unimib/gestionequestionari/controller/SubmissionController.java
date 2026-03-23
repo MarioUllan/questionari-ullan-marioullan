@@ -1,6 +1,6 @@
 package it.unimib.gestionequestionari.controller;
 
-import it.unimib.gestionequestionari.model.QuestionnaireSubmission;
+import it.unimib.gestionequestionari.model.Submission;
 import it.unimib.gestionequestionari.service.SubmissionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,58 +18,64 @@ public class SubmissionController {
         this.submissionService = submissionService;
     }
 
-    @GetMapping("/fill/{questionnaireId}")
-    public String startForm(@PathVariable Long questionnaireId, Model model) {
-        model.addAttribute("questionnaireId", questionnaireId);
+    /**
+     * Start page: enter questionnaire access code + email.
+     */
+    @GetMapping("/fill")
+    public String startForm() {
         return "submissions/start";
     }
 
-    @PostMapping("/fill/{questionnaireId}")
-    public String start(@PathVariable Long questionnaireId,
-                        @RequestParam("email") String email) {
-
-        QuestionnaireSubmission submission = submissionService.createDraft(questionnaireId, email);
-        return "redirect:/submissions/" + submission.getAccessCode();
-    }
-
-    @GetMapping("/submissions/access")
-    public String accessByCode(@RequestParam("code") String code) {
-        return "redirect:/submissions/" + code.trim();
-    }
-
-    @GetMapping("/submissions/{code}")
-    public String view(@PathVariable String code, Model model) {
+    @PostMapping("/fill")
+    public String start(@RequestParam("accessCode") String accessCode,
+                        @RequestParam("email") String email,
+                        Model model) {
         try {
-            QuestionnaireSubmission submission = submissionService.findByCode(code);
+            Submission submission = submissionService.startOrResume(accessCode, email);
+            return "redirect:/submissions/" + submission.getId();
+        } catch (RuntimeException ex) {
+            model.addAttribute("error", ex.getMessage());
+            model.addAttribute("accessCode", accessCode);
+            model.addAttribute("email", email);
+            return "submissions/start";
+        }
+    }
+
+    @GetMapping("/submissions/{id}")
+    public String view(@PathVariable Long id, Model model) {
+        try {
+            Submission submission = submissionService.findById(id);
             model.addAttribute("submission", submission);
             model.addAttribute("questionnaire", submission.getQuestionnaire());
             return "submissions/fill";
         } catch (IllegalArgumentException ex) {
-            model.addAttribute("code", code);
+            model.addAttribute("id", id);
             return "submissions/not-found";
         }
     }
 
-    @PostMapping("/submissions/{code}/save")
-    public String saveDraft(@PathVariable String code,
+    @PostMapping("/submissions/{id}/save")
+    public String saveDraft(@PathVariable Long id,
                             @RequestParam Map<String, String> params) {
-
-        submissionService.saveDraft(code, extractAnswers(params));
-        return "redirect:/submissions/" + code;
+        submissionService.saveDraft(id, extractAnswers(params));
+        return "redirect:/submissions/" + id;
     }
 
-    @PostMapping("/submissions/{code}/submit")
-    public String submitFinal(@PathVariable String code,
-                              @RequestParam Map<String, String> params) {
-
-        submissionService.submitFinal(code, extractAnswers(params));
-        return "redirect:/submissions/" + code + "?final=true";
-    }
-
-    @PostMapping("/submissions/{code}/delete")
-    public String delete(@PathVariable String code) {
-        submissionService.deleteByCode(code);
-        return "redirect:/?deleted=true";
+    @PostMapping("/submissions/{id}/submit")
+    public String submit(@PathVariable Long id,
+                         @RequestParam Map<String, String> params,
+                         Model model) {
+        try {
+            submissionService.submit(id, extractAnswers(params));
+            return "redirect:/submissions/" + id + "?submitted=true";
+        } catch (RuntimeException ex) {
+            // re-render with error
+            Submission submission = submissionService.findById(id);
+            model.addAttribute("submission", submission);
+            model.addAttribute("questionnaire", submission.getQuestionnaire());
+            model.addAttribute("error", ex.getMessage());
+            return "submissions/fill";
+        }
     }
 
     private Map<Long, String> extractAnswers(Map<String, String> params) {

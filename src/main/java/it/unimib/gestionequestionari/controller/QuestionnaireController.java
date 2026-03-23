@@ -1,8 +1,9 @@
 package it.unimib.gestionequestionari.controller;
 
-import it.unimib.gestionequestionari.model.Questionnaire;
 import it.unimib.gestionequestionari.service.QuestionService;
 import it.unimib.gestionequestionari.service.QuestionnaireService;
+import it.unimib.gestionequestionari.service.SubmissionService;
+import it.unimib.gestionequestionari.model.Questionnaire;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,10 +18,14 @@ public class QuestionnaireController {
 
     private final QuestionnaireService questionnaireService;
     private final QuestionService questionService;
+    private final SubmissionService submissionService;
 
-    public QuestionnaireController(QuestionnaireService questionnaireService, QuestionService questionService) {
+    public QuestionnaireController(QuestionnaireService questionnaireService,
+                                   QuestionService questionService,
+                                   SubmissionService submissionService) {
         this.questionnaireService = questionnaireService;
         this.questionService = questionService;
+        this.submissionService = submissionService;
     }
 
     @GetMapping("/questionnaires")
@@ -47,7 +52,6 @@ public class QuestionnaireController {
         return "redirect:/questionnaires";
     }
 
-    // Pantalla para asignar preguntas a un cuestionario
     @GetMapping("/questionnaires/{id}/edit-questions")
     public String editQuestions(@PathVariable Long id, Model model) {
         var questionnaire = questionnaireService.findById(id);
@@ -58,22 +62,45 @@ public class QuestionnaireController {
 
     @PostMapping("/questionnaires/{id}/questions")
     public String updateQuestions(@PathVariable Long id,
-                                  @RequestParam(value = "questionIds", required = false) List<Long> questionIds) {
-
-        var questionnaire = questionnaireService.findById(id);
-
-        List<Long> ids = (questionIds == null) ? List.of() : questionIds;
-        var selected = questionService.findAllById(ids);
-
-        questionnaire.setQuestions(new ArrayList<>(selected));
-        questionnaireService.save(questionnaire);
-
-        return "redirect:/questionnaires";
+                                  @RequestParam(value = "questionIds", required = false) List<Long> questionIds,
+                                  Model model) {
+        try {
+            List<Long> ids = (questionIds == null) ? List.of() : questionIds;
+            var selected = questionService.findAllById(ids);
+            questionnaireService.updateQuestions(id, new ArrayList<>(selected));
+            return "redirect:/questionnaires";
+        } catch (RuntimeException ex) {
+            var questionnaire = questionnaireService.findById(id);
+            model.addAttribute("questionnaire", questionnaire);
+            model.addAttribute("allQuestions", questionService.findAll());
+            model.addAttribute("error", ex.getMessage());
+            return "questionnaires/edit-questions";
+        }
     }
+
+    @PostMapping("/questionnaires/{id}/finalize")
+    public String finalizeQuestionnaire(@PathVariable Long id, Model model) {
+        try {
+            questionnaireService.finalizeQuestionnaire(id);
+            return "redirect:/questionnaires";
+        } catch (RuntimeException ex) {
+            model.addAttribute("questionnaires", questionnaireService.findAll());
+            model.addAttribute("error", ex.getMessage());
+            return "questionnaires/list";
+        }
+    }
+
+    @GetMapping("/questionnaires/{id}/submissions")
+    public String listSubmissions(@PathVariable Long id, Model model) {
+        var questionnaire = questionnaireService.findById(id);
+        model.addAttribute("questionnaire", questionnaire);
+        model.addAttribute("submissions", submissionService.listByQuestionnaireId(id));
+        return "questionnaires/submissions";
+    }
+
     @PostMapping("/questionnaires/{id}/delete")
     public String delete(@PathVariable Long id) {
         questionnaireService.deleteById(id);
         return "redirect:/questionnaires";
     }
-
 }
